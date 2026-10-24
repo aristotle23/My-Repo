@@ -34,8 +34,5 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    'mono' => [
-        'secret_key' => getenv('MONO_SECRET_KEY'),
-        'base_url' =>   getenv('MONO_BASE_URL')
-    ]
+
 ];
