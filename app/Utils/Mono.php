@@ -13,7 +13,7 @@ class Mono
     public function __construct()
     {
         $this->httpClient = Http::withHeaders([
-           'Accept' => 'application/json',
+            'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'mono-sec-key' => config('services.mono.secret_key'),
         ])->baseUrl(config('services.mono.base_url'));
@@ -25,21 +25,22 @@ class Mono
             'bvn' => $bvn,
             'scope' => $scope,
         ]);
-        if($response->status() !== 200 || $response->json('status') !== 'successful'){
+        if ($response->status() !== 200 || $response->json('status') !== 'successful') {
             Log::info('Mono BVN Verification Error: ' . $response->body());
             throw new \Exception($response->json('message') ?? 'Failed to initiate BVN verification');
         }
         $responseData = $response->json('data');
         return $responseData;
     }
-    public function verifyBvnOtp(string $method, string $phoneNumber, string $sessionId): array{
+    public function verifyBvnOtp(string $method, string $phoneNumber, string $sessionId): array
+    {
         $response = $this->httpClient->withHeaders([
             'x-session-id' => $sessionId,
         ])->post('/v2/lookup/bvn/verify', [
             'method' => $method,
             'phone_number' => $phoneNumber,
         ]);
-        if($response->status() !== 200 || $response->json('status') !== 'successful'){
+        if ($response->status() !== 200 || $response->json('status') !== 'successful') {
             Log::info('Mono BVN OTP Verification Error: ' . $response->body());
             throw new \Exception($response->json('message') ?? 'Failed to verify BVN OTP');
         }
@@ -53,11 +54,21 @@ class Mono
         ])->post('/v2/lookup/bvn/details', [
             'otp' => $otp
         ]);
-        if($response->status() !== 200 || $response->json('status') !== 'successful'){
+        if ($response->status() !== 200 || $response->json('status') !== 'successful') {
             Log::info('Mono BVN Details Retrieval Error: ' . $response->body());
             throw new \Exception($response->json('message') ?? 'Failed to retrieve BVN details');
         }
         return $response->json('data');
     }
-    
+    public function ninLookup(string $nin): array
+    {
+        $response = $this->httpClient->post('/v3/lookup/nin', [
+            'nin' => $nin
+        ]);
+        if ($response->status() !== 200 || $response->json('status') !== 'successful') {
+            Log::info('Mono NIN lookup failed with Error: ' . $response->body());
+            throw new \Exception($response->json('message') ?? 'Failed to retrieve BVN details');
+        }
+        return $response->json('data');
+    }
 }
