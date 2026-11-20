@@ -42,14 +42,11 @@ class MonoService
 
     }
     public function ninLookup(string $nin){
-        
-        
         try {
             $validateData = $this->mono->ninLookup($nin);
-            return ['success' => true, 'message' => 'NIN validated successfully', 'data' => $validateData, 'status_code' => 200];
+            return response(['success' => true, 'message' => 'NIN validated successfully', 'data' => $validateData, 'status_code' => 200],200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' =>  $e->getMessage()], 400);
         }
-        
     }
 }
