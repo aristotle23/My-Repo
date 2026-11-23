@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils;
+namespace App\ThirdParty\IdentityProviders;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;

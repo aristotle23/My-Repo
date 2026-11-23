@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Utils\Mono;
+use App\ThirdParty\IdentityProviders\Mono;
 use Illuminate\Support\Facades\Crypt;
 
 class MonoService
