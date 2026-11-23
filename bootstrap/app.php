@@ -3,6 +3,16 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\View\ViewException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,5 +25,43 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+            $exceptions->render(function (NotFoundHttpException $e, $request) {
+                return response()->json([
+                    "success" => false,
+                    "statusCode" => 404,
+                    "message" => "Resource not found"
+                ], 404);
+            });
+            $exceptions->render(function (AccessDeniedHttpException $e, $request) {
+                return response()->json([
+                    "success" => false,
+                    "statusCode" => 403,
+                    "message" => $e->getMessage()
+                ], 403);
+            });
+            $exceptions->render(function (MethodNotAllowedHttpException $e, $request) {
+                return response()->json([
+                    "success" => false,
+                    "statusCode" => 405,
+                    "message" => $e->getMessage()
+                ], 405);
+            });
+    
+            $exceptions->render(function (\Exception | Throwable $e, $request) {
+                if (!in_array(get_class($e), [
+                    ValidationException::class,
+                    MethodNotAllowedException::class,
+                    AuthenticationException::class,
+                    ViewException::class,
+                    ThrottleRequestsException::class,
+                    HttpResponseException::class
+                ])) {
+                    Log::error($e->getMessage(), ["exception" => get_class($e)]);
+                    return response()->json([
+                        "success" => false,
+                        "statusCode" => 500,
+                        "message" => "Internal server error... please try again later"
+                    ], 500);
+                }
+            });
     })->create();
