@@ -39,10 +39,5 @@ class MonoController extends Controller
         ]);
         return $this->service->getBvnDetails($request->otp, $request->session_id);
     }
-    public function ninLookup(Request $request){
-        $request->validate([
-            'nin' => 'required'
-        ]);
-        return $this->service->ninLookup($request->nin);
-    }
+    
 }

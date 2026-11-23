@@ -60,15 +60,5 @@ class Mono
         }
         return $response->json('data');
     }
-    public function ninLookup(string $nin): array
-    {
-        $response = $this->httpClient->post('/v3/lookup/nin', [
-            'nin' => $nin
-        ]);
-        if ($response->status() !== 200 || $response->json('status') !== 'successful') {
-            Log::info('Mono NIN lookup failed with Error: ' . $response->body());
-            throw new \Exception($response->json('message') ?? 'Failed to retrieve BVN details');
-        }
-        return $response->json('data');
-    }
+    
 }
