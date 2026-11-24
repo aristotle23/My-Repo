@@ -9,4 +9,5 @@ class GetBvnDetailsDto{
     public string $bvn;
     public string $raw_response;
     public string $raw_request;
+    public string $provider;
 }
