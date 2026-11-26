@@ -7,11 +7,11 @@ use App\Http\Middleware\AccessCheckMiddleware;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware([AccessCheckMiddleware::class])->group(function () {
+Route::middleware([])->group(function () {
     Route::get("user", [UserController::class, "getUser"]);
     Route::group(["prefix" => "mono"], function () {
         Route::post("/initiate", [MonoController::class, "initiateBvn"]);
         Route::post("/verify", [MonoController::class, "verifyBvnOtp"]);
     });
-    Route::post("identity/bvn", [IdentityController::class, "getBvnDetails"]);
+    Route::post("identity/bvn", [MonoController::class, "getBvnDetails"]);
 });
