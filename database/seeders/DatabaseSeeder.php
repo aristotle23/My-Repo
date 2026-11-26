@@ -19,20 +19,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        //Str::random(5);
-        /* User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]); */
-        Provider::create([
-            'name' => "mono",
-            'class_path' => Mono::class,
-            'is_active' => 1
+        
+        /* Provider::create([
+            "name" => "mono",
+            "class_path" => Mono::class,
+            "is_active" => 1,
         ]);
         AccessConfig::create([
             "access_code" => 1234567890,
-            "is_active" => 1
-        ]);
+            "is_active" => 1,
+        ]); */
     }
 }
