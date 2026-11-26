@@ -130,3 +130,36 @@ $dbRecord = BvnLookupLog::create([
 $encryptedResponse = Crypt::encryptString(json_encode($dbRecord));
 //Cache::put(BvnLookupLog::getCacheKey($request["bvn"]), $encryptedResponse );
 return $encryptedResponse;
+
+
+-----------------------------------
+PROVIDER CONTRACT
+------------------------------------
+
+
+<?php
+namespace App\ThirdParty\IdentityProviders\Contract;
+
+use App\ThirdParty\IdentityProviders\Dto\GetBvnDetailsDto;
+
+
+interface ProviderContract {
+    public function getBvnDetails( string ...$param): GetBvnDetailsDto;
+    public function getProviderName(): string;
+}
+
+
+------------------------------------------
+MONO CONTROLLER
+------------------------------------------
+
+$request->validate([
+            'bvn' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required'
+        ]);
+        return response()->json([
+            'status' => true,
+            'data' => $this->service->getBvnDetails($request->all()),
+            'message' => 'bvn records retrieved successfully'
+        ]);
