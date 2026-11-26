@@ -10,6 +10,6 @@ Route::middleware([])->group(function () {
     Route::group(["prefix" => "mono"], function () {
         Route::post("/initiate", [MonoController::class, "initiateBvn"]);
         Route::post("/verify", [MonoController::class, "verifyBvnOtp"]);
-        Route::post("/details", [MonoController::class, "getBvnDetails"]);
     });
+    Route::post("/details", [MonoController::class, "getBvnDetails"]);
 });
