@@ -10,7 +10,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class Mono implements ProviderContract
+class Mono //implements ProviderContract
 {
     private PendingRequest $httpClient;
 
@@ -51,7 +51,7 @@ class Mono implements ProviderContract
         return $response->json();
     }
 
-    public function getBvnDetails(string ...$param): GetBvnDetailsDto
+    public function getBvnDetails(string ...$param)//: GetBvnDetailsDto
     {
         $response = $this->httpClient->withHeaders([
             'x-session-id' => $param['session_id'],
@@ -60,12 +60,12 @@ class Mono implements ProviderContract
         ]);
         if ($response->status() !== 200 || $response->json('status') !== 'successful') {
             Log::info('Mono BVN Details Retrieval Error: ' . $response->body());
-            Provider::where("name", $this->getProviderName())->increment('ttl_failed');
+            //Provider::where("name", $this->getProviderName())->increment('ttl_failed');
             throw new CustomException($response->json('message') ?? 'Failed to retrieve BVN details');
         }
         $responseData =  $response->json('data');
         
-        Provider::where(
+        /* Provider::where(
             "name",
             $this->getProviderName(),
         )->increment("ttl_success");
@@ -77,10 +77,10 @@ class Mono implements ProviderContract
             provider: $this->getProviderName(),
             raw_request: json_encode($param), 
             raw_response: json_encode($responseData)
-        );
+        ); */
     }
-    public function getProviderName(): string {
+    /* public function getProviderName(): string {
         return 'mono';
-    }
+    } */
     
 }

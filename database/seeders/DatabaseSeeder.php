@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         
-        Provider::create([
+        /* Provider::create([
             "name" => "mono",
             "class_path" => Mono::class,
             "is_active" => 1,
@@ -28,6 +28,6 @@ class DatabaseSeeder extends Seeder
         AccessConfig::create([
             "access_code" => 1234567890,
             "is_active" => 1,
-        ]);
+        ]); */
     }
 }
