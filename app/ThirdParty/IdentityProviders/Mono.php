@@ -2,11 +2,15 @@
 
 namespace App\ThirdParty\IdentityProviders;
 
+use App\Exceptions\CustomException;
+use App\Models\Provider;
+use App\ThirdParty\IdentityProviders\Contract\ProviderContract;
+use App\ThirdParty\IdentityProviders\Dto\GetBvnDetailsDto;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class Mono
+class Mono implements ProviderContract
 {
     private PendingRequest $httpClient;
 
@@ -47,18 +51,36 @@ class Mono
         return $response->json();
     }
 
-    public function getBvnDetails(string $otp, string $sessionId): array
+    public function getBvnDetails(string ...$param): GetBvnDetailsDto
     {
         $response = $this->httpClient->withHeaders([
-            'x-session-id' => $sessionId,
+            'x-session-id' => $param['session_id'],
         ])->post('/v2/lookup/bvn/details', [
-            'otp' => $otp
+            'otp' => $param['otp']
         ]);
         if ($response->status() !== 200 || $response->json('status') !== 'successful') {
             Log::info('Mono BVN Details Retrieval Error: ' . $response->body());
-            throw new \Exception($response->json('message') ?? 'Failed to retrieve BVN details');
+            Provider::where("name", $this->getProviderName())->increment('ttl_failed');
+            throw new CustomException($response->json('message') ?? 'Failed to retrieve BVN details');
         }
-        return $response->json('data');
+        $responseData =  $response->json('data');
+        
+        Provider::where(
+            "name",
+            $this->getProviderName(),
+        )->increment("ttl_success");
+        
+        return new GetBvnDetailsDto(
+            bvn: $responseData['bvn'],
+            first_name: $responseData['first_name'],
+            last_name: $responseData['last_name'],
+            provider: $this->getProviderName(),
+            raw_request: json_encode($param), 
+            raw_response: json_encode($responseData)
+        );
+    }
+    public function getProviderName(): string {
+        return 'mono';
     }
     
 }

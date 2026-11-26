@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\AccessConfig;
+use App\Models\Provider;
 use App\Models\User;
+use App\ThirdParty\IdentityProviders\Mono;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -18,9 +21,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         //Str::random(5);
-        User::factory()->create([
+        /* User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]); */
+        Provider::create([
+            'name' => "mono",
+            'class_path' => Mono::class,
+            'is_active' => 1
+        ]);
+        AccessConfig::create([
+            "access_code" => 1234567890,
+            "is_active" => 1
         ]);
     }
 }
