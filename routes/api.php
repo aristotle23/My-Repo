@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\MonoController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AccessCheckMiddleware;
 use Illuminate\Support\Facades\Route;
+
 
 Route::middleware([])->group(function () {
     Route::get("user", [UserController::class, "getUser"]);
@@ -11,5 +13,5 @@ Route::middleware([])->group(function () {
         Route::post("/initiate", [MonoController::class, "initiateBvn"]);
         Route::post("/verify", [MonoController::class, "verifyBvnOtp"]);
     });
-    Route::post("/details", [MonoController::class, "getBvnDetails"]);
+    Route::post("identity/bvn", [IdentityController::class, "getBvnDetails"]);
 });
