@@ -129,7 +129,7 @@ class IdentityService
         $providerRecord = $this->identityProvider->getBvnDetails(...$request);
         
         if (  !$providerRecord || strtolower($providerRecord->first_name) != strtolower($request["first_name"]) &&
-                strtolower($providerRecord->last_name) != strtolower(request["last_name"])
+                strtolower($providerRecord->last_name) != strtolower($request["last_name"])
         ) {
             throw new CustomException("Identity mismatch", 400);
         }
