@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\IdentityService;
 use App\Services\UserServices;
 use App\Http\Controllers\Controller;
 use App\Services\MonoService;
@@ -12,7 +13,7 @@ class MonoController extends Controller
 
    
 
-    public function __construct(private MonoService $service)
+    public function __construct(private MonoService $service, private IdentityService $ids)
     {
         
     }
@@ -34,10 +35,15 @@ class MonoController extends Controller
     }
     public function getBvnDetails(Request $request){
         $request->validate([
-            'otp' => 'required',
-            'session_id' => 'required'
-        ]);
-        return $this->service->getBvnDetails($request->otp, $request->session_id);
+                    'bvn' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required'
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'data' => $this->ids->getBvnDetails($request->all()),
+                    'message' => 'bvn records retrieved successfully'
+                ]);
     }
     
 }
